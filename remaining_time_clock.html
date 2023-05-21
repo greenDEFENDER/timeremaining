@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Remaining Time</title>
+  <style>
+     body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: #fff;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    #clock {
+      font-size: 82px;
+      font-style: Fantasy;
+      animation: scale-up 1s ease infinite alternate;
+      color: #e70a15;
+    }
+
+    @keyframes scale-up {
+      0% {
+        transform: scale(1);
+      }
+      100% {
+        transform: scale(1.1);
+      }
+    }
+
+    .quote {
+      font-size: 24px;
+      margin-left: 20%;
+      margin-right: 20%;
+      color: #fff;
+    }
+
+    .animated-gradient {
+      background-image: linear-gradient(to right, #f12711, #f5af19, #f12711);
+      background-size: 200% auto;
+      animation: gradient-animation 5s linear infinite;
+    }
+
+    @keyframes gradient-animation {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .floating-leaf {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background-image: url('no value');
+      background-size: cover;
+      animation: leaf-animation 10s linear infinite;
+    }
+
+    @keyframes leaf-animation {
+      0% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      50% {
+        transform: translate(200px, -200px) rotate(360deg);
+      }
+      100% {
+        transform: translate(0, 0) rotate(720deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container animated-gradient">
+    <h1>Remaining Time:</h1>
+    <div id="clock"></div>
+    <div class="quote" id="quote"></div>
+    <div class="floating-leaf"></div>
+  </div>
+
+  <script>
+    // Calculate the remaining time
+    var lifeExpectancy = 65;
+    var dateOfBirth = new Date(2001, 7, 1); // Months are zero-based, so 7 represents August
+
+    // Function to fetch a random quote from the Quotable API
+    function fetchRandomQuote() {
+      fetch('https://api.quotable.io/random')
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(data) {
+          document.getElementById("quote").innerHTML = data.content;
+        })
+        .catch(function(error) {
+          console.log('Error fetching quote:', error);
+        });
+    }
+
+    // Function to update the clock and fetch a new quote
+    function updateClockAndQuote() {
+      var currentDate = new Date();
+      var remainingTime = new Date(dateOfBirth.getTime() + lifeExpectancy * 365.25 * 24 * 60 * 60 * 1000 - currentDate.getTime());
+
+      var days = Math.floor(remainingTime.getTime() / (24 * 60 * 60 * 1000));
+      var hours = remainingTime.getUTCHours();
+      var minutes = remainingTime.getUTCMinutes();
+      var seconds = remainingTime.getUTCSeconds();
+
+      document.getElementById("clock").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+    }
+
+    // Function to update the quote every 30 seconds
+    function startQuoteUpdate() {
+      setInterval(fetchRandomQuote, 30000); // Update every 30 seconds
+    }
+
+    // Function to continuously update the clock every second
+    function startClockUpdate() {
+      setInterval(updateClockAndQuote, 1000); // Update every second
+    }
+
+    startClockUpdate();
+    startQuoteUpdate();
+  </script>
+</body>
+</html>
+
